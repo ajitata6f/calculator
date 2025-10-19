@@ -1,78 +1,81 @@
-name: Build Spring Boot Application
+name: Build Calculator Service
 
 on:
   push:
     branches:
-      - production
       - development
+      - production
   pull_request:
     branches:
-      - production
       - development
+      - production
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: 'gradle'
-      
+
       - name: Make gradlew executable
         run: chmod +x gradlew
-      
+
       - name: Build with Gradle
         run: ./gradlew clean bootJar --no-daemon
-      
+
       - name: Run tests
         run: ./gradlew test --no-daemon
-      
+
       - name: Upload build artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: spring-boot-jar
+          name: calculator-service-jar
           path: build/libs/*.jar
           retention-days: 30
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
+
       - name: Extract metadata for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot-app
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/calculator-service
           tags: |
             type=ref,event=branch
             type=ref,event=pr
             type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-      
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/production' }}
+            type=raw,value=dev-latest,enable=${{ github.ref == 'refs/heads/development' }}
+            type=raw,value=prod-latest,enable=${{ github.ref == 'refs/heads/production' }}
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
+
       - name: Build summary
         if: always()
         run: |

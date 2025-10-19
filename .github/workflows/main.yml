@@ -3,12 +3,12 @@ name: Build Spring Boot Application
 on:
   push:
     branches:
-      - main
-      - develop
+      - production
+      - development
   pull_request:
     branches:
-      - main
-      - develop
+      - production
+      - development
   workflow_dispatch:
 
 jobs:

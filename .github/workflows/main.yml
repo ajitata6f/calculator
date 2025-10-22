@@ -10,13 +10,12 @@ on:
   workflow_dispatch:
 
 env:
-  SERVICE_NAME: Calculator Service
   AWS_REGION: us-east-2
   ECR_REPOSITORY: calculator-service
 
 jobs:
   build:
-    name: Build and Push ${{ env.SERVICE_NAME }} Docker Image to ECR
+    name: Build and Push Calculator Service Docker Image to ECR
     runs-on: ubuntu-latest
 
     steps:

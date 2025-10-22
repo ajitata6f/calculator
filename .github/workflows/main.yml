@@ -1,10 +1,6 @@
 name: Build Calculator Service
 
 on:
-  #push:
-  #  branches:
-  #    - development
-  #    - production
   pull_request:
     types:
       - closed
@@ -94,7 +90,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Author:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Author:** ${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Merged By:** ${{ github.event.sender.login }}" >> $GITHUB_STEP_SUMMARY  
           echo "- **Java Version:** 17" >> $GITHUB_STEP_SUMMARY
           echo "- **Build Tool:** Gradle" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

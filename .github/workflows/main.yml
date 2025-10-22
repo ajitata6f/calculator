@@ -1,10 +1,6 @@
 name: Build Calculator Service
 
 on:
-  #push:
-  #  branches:
-  #    - development
-  #    - production
   pull_request:
     types:
       - closed

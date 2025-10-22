@@ -14,7 +14,7 @@ env:
   ECR_REPOSITORY: calculator-service
 
 jobs:
-  build:
+  Create_and_Push_Calculator_Service_Docker_Image:
     runs-on: ubuntu-latest
 
     steps:

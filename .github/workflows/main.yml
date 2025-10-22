@@ -66,12 +66,7 @@ jobs:
         with:
           images: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}
           tags: |
-            type=ref,event=branch
-            type=ref,event=pr
             type=sha, format=short,prefix=
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/production' }}
-            type=raw,value=dev-latest,enable=${{ github.ref == 'refs/heads/development' }}
-            type=raw,value=prod-latest,enable=${{ github.ref == 'refs/heads/production' }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
